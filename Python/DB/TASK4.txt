@@ -1,0 +1,91 @@
+--  emp_id,name,leave_type,start_date,till_date,team,document,manager 
+
+--1 How many employees were on leave for the month of august 2022
+CREATE VIEW KPI1 AS
+Select COUNT(*) AS total_leaves from leave_details where start_date between '2022-08-01' and '2022-08-31';
+
+--2 In which month for the year 2022, maximum number of employees were on sick leave.
+CREATE VIEW KPI2 AS
+SELECT 
+    EXTRACT(MONTH FROM start_date) AS month,
+    COUNT(*) AS employee_count
+FROM 
+    leave_details
+WHERE 
+    EXTRACT(YEAR FROM start_date) = 2022
+GROUP BY 
+    month
+ORDER BY 
+    employee_count DESC
+LIMIT 1;
+
+
+-- 3 Rank the employees based on the leave taken by them in the year 2023, give top 5 employees with maximum leave taken.
+CREATE VIEW KPI3 AS
+SELECT
+    name,
+    COUNT(*) AS leave_count
+FROM
+    leave_details
+WHERE
+    EXTRACT(YEAR FROM start_date) = 2023
+GROUP BY
+    name
+ORDER BY
+    leave_count DESC
+LIMIT 5;
+
+
+-- 4 Employees leaves distribution under each manager for first three month the year 2023. I.e under each manager we need to know how many employees were on leave for first three month.
+CREATE VIEW KPI4 AS
+SELECT
+  manager,
+  COUNT(*) AS total_leaves
+FROM
+  leave_details
+WHERE
+  start_date >= '2023-01-01'
+  AND start_date < '2023-04-01'
+GROUP BY
+  manager;
+
+
+-- 5 Rank teams based on the leaves taken by the employee for the year 2022
+CREATE VIEW KPI5 AS
+SELECT
+  team,
+  COUNT(*) AS leaves_taken
+FROM
+  leave_details
+WHERE
+  EXTRACT(YEAR FROM start_date) = 2022
+GROUP BY
+  team
+ORDER BY
+  leaves_taken DESC;
+
+
+-- 6 Take top 2 teams who have taken maximum leave for the year of 2022, and give their leave_type distribution for the whole year i.e. how many sick leave, casual leave etc were taken by the employees in these teams.
+CREATE VIEW KPI6 AS
+SELECT
+  leave_type,
+  COUNT(*) AS leave_count
+FROM
+  leave_details
+WHERE
+  EXTRACT(YEAR FROM start_date) = 2022
+  AND team IN (
+    SELECT team
+    FROM
+      leave_details
+    WHERE
+      EXTRACT(YEAR FROM start_date) = 2022
+    GROUP BY
+      team
+    ORDER BY
+      COUNT(*) DESC
+    LIMIT
+      2
+  )
+GROUP BY
+  leave_type;
