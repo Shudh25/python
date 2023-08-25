@@ -68,6 +68,7 @@ ORDER BY
 -- 6 Take top 2 teams who have taken maximum leave for the year of 2022, and give their leave_type distribution for the whole year i.e. how many sick leave, casual leave etc were taken by the employees in these teams.
 CREATE VIEW KPI6 AS
 SELECT
+  team,
   leave_type,
   COUNT(*) AS leave_count
 FROM
@@ -88,4 +89,5 @@ WHERE
       2
   )
 GROUP BY
+  team,
   leave_type;
