@@ -1,0 +1,20 @@
+{
+    "manifest_version": 2,
+    "name": "BORDER",
+    "version": "1.0",
+
+    "description": "Add a red border to all matching pages",
+
+    "icons": {
+        "48": "icons/border-48.png" 
+    },
+
+    "content_scripts": [
+        {
+            "matches": ["*://*.twitch.tv/mbcrump"],
+            "js": ["app.js"]
+        }
+
+    ]
+
+}
